@@ -198,6 +198,18 @@ function createElement(tag, className = "", text = "") {
   return element;
 }
 
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
+
 /* ==========================================================================
    FORMATTING AND TIME HELPERS
    ========================================================================== */
@@ -419,13 +431,35 @@ function startClock() {
    ========================================================================== */
 
 async function loadDataset() {
+  const overlay = byId("loadingOverlay");
+  const bar = byId("loadingBar");
+
   try {
+    // Simulated progress for better UX on large file
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 90) {
+        clearInterval(interval);
+      } else {
+        if (bar) bar.style.width = `${progress}%`;
+      }
+    }, 200);
+
     const response = await fetch(DATA_URL, { cache: "no-store" });
     if (!response.ok) {
+      clearInterval(interval);
       throw new Error(`HTTP ${response.status}`);
     }
 
     const rawData = await response.json();
+    clearInterval(interval);
+    if (bar) bar.style.width = "100%";
+
+    setTimeout(() => {
+      overlay?.classList.add("fade-out");
+    }, 400);
+
     state.dataset = normalizeDataset(rawData);
     state.filteredDataset = [...state.dataset];
 
@@ -437,8 +471,12 @@ async function loadDataset() {
     renderLookupDefault();
     applyDatasetFiltersAndRender();
     renderStatistics(state.dataset, "Full Dataset");
+    
+    // Check for shared URL params after data is loaded
+    applyUrlState();
   } catch (error) {
     console.error("Dataset load error:", error);
+    overlay?.classList.add("fade-out");
     showToast(INLINE_TEXT.datasetLoadFail);
   }
 }
@@ -635,14 +673,48 @@ function buildResultSummary(resultName) {
    ========================================================================== */
 
 function highlightCycle(resultName) {
-  queryAll(".cycle-node").forEach((node) => {
-    node.classList.toggle("active", node.dataset.result === resultName);
+  queryAll(".cycle-node-group").forEach((group) => {
+    group.classList.toggle("active", group.dataset.result === resultName);
   });
 }
 
 function highlightBranchClock(branchName) {
-  queryAll(".branch-segment").forEach((segment) => {
-    segment.classList.toggle("active", segment.dataset.branch === branchName);
+  const index = BRANCHES.indexOf(branchName);
+  if (index === -1) return;
+
+  const hand = byId("clockHand");
+  if (hand) {
+    const angle = index * 30; // 360 / 12
+    hand.style.transform = `rotate(${angle}deg)`;
+  }
+
+  queryAll(".clock-segment-group").forEach((group) => {
+    group.classList.toggle("active", group.dataset.branch === branchName);
+  });
+}
+
+function setupClockSegments() {
+  const container = byId("clockSegments");
+  if (!container) return;
+  clearChildren(container);
+
+  BRANCHES.forEach((branch, i) => {
+    const angle = (i * 30 - 90) * (Math.PI / 180);
+    const x = 200 + 140 * Math.cos(angle);
+    const y = 200 + 140 * Math.sin(angle);
+
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("class", "clock-segment-group");
+    group.setAttribute("data-branch", branch);
+
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", x);
+    text.setAttribute("y", y + 5);
+    text.setAttribute("class", "clock-segment-text");
+    text.textContent = branch;
+
+    group.appendChild(text);
+    container.appendChild(group);
   });
 }
 
@@ -1296,6 +1368,7 @@ function renderDatasetTable() {
 
 function openDatasetDetail(row) {
   const panel = byId("datasetRowDetail");
+  const backdrop = byId("modalBackdrop");
   const content = byId("datasetDetailContent");
 
   clearChildren(content);
@@ -1309,11 +1382,13 @@ function openDatasetDetail(row) {
     <p><strong>Classification:</strong> ${row.classification}</p>
   `;
 
+  showElement(backdrop);
   showElement(panel);
 }
 
 function closeDatasetDetail() {
   hideElement(byId("datasetRowDetail"));
+  hideElement(byId("modalBackdrop"));
 }
 
 function nextDatasetPage() {
@@ -1586,13 +1661,65 @@ function buildGregorianSummaryText() {
   ].join("\n");
 }
 
-function buildCurrentMomentSummaryText() {
-  return [
-    `Current Moment Result: ${byId("currentMomentResult").textContent}`,
-    `DateTime: ${byId("currentMomentDateTime").textContent}`,
-    `Lunar: ${byId("currentMomentLunar").textContent}`,
-    `Branch: ${byId("currentMomentBranch").textContent}`
-  ].join("\n");
+/* ==========================================================================
+   SHARING & DEEP LINKING
+   ========================================================================== */
+
+function generateShareLink(params) {
+  const url = new URL(window.location.href.split('#')[0]);
+  Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
+  return url.toString();
+}
+
+function handleShare(mode) {
+  let params = { mode };
+  
+  if (mode === "manual") {
+    params.m = byId("monthInput").value;
+    params.d = byId("dayInput").value;
+    params.h = byId("branchInput").value;
+  } else if (mode === "gregorian") {
+    params.date = byId("gregorianDateInput").value;
+    params.time = byId("gregorianTimeInput").value;
+  }
+  
+  const link = generateShareLink(params);
+  copyText(link);
+  showToast("Shareable link copied!");
+}
+
+function applyUrlState() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get("mode");
+  
+  if (!mode) return;
+  
+  switchTab("calculator");
+  
+  if (mode === "manual") {
+    const m = urlParams.get("m");
+    const d = urlParams.get("d");
+    const h = urlParams.get("h");
+    if (m && d && h) {
+      switchCalculatorPanel("manualClassic");
+      byId("monthInput").value = m;
+      byId("dayInput").value = d;
+      byId("branchInput").value = h;
+      renderManualResult(Number(m), Number(d), Number(h));
+    }
+  } else if (mode === "gregorian") {
+    const date = urlParams.get("date");
+    const time = urlParams.get("time");
+    if (date && time) {
+      switchCalculatorPanel("gregorianConvert");
+      byId("gregorianDateInput").value = date;
+      byId("gregorianTimeInput").value = time;
+      handleGregorianCalculation({ preventDefault: () => {} });
+    }
+  }
+  
+  // Clear search params to avoid re-triggering on refresh
+  window.history.replaceState({}, document.title, window.location.pathname);
 }
 
 /* ==========================================================================
@@ -1771,6 +1898,7 @@ function setupButtons() {
       copyText(buildManualSummaryText());
     }
   });
+  byId("manualShareBtn")?.addEventListener("click", () => handleShare("manual"));
 
   byId("gregorianCalcForm")?.addEventListener("submit", handleGregorianCalculation);
   byId("gregorianResetBtn")?.addEventListener("click", resetGregorianForm);
@@ -1779,12 +1907,16 @@ function setupButtons() {
       copyText(buildGregorianSummaryText());
     }
   });
+  byId("gregorianShareBtn")?.addEventListener("click", () => handleShare("gregorian"));
 
   byId("currentMomentBtn")?.addEventListener("click", handleCurrentMomentCalculation);
   byId("currentMomentCopyBtn")?.addEventListener("click", () => {
     if (!byId("currentMomentOutput").classList.contains("hidden")) {
       copyText(buildCurrentMomentSummaryText());
     }
+  });
+  byId("currentMomentShareBtn")?.addEventListener("click", () => {
+    handleShare("gregorian"); // share current moment as a gregorian link
   });
 
   byId("compareForm")?.addEventListener("submit", handleCompareSubmit);
@@ -1807,11 +1939,15 @@ function setupButtons() {
   byId("prevPageBtn")?.addEventListener("click", prevDatasetPage);
   byId("nextPageBtn")?.addEventListener("click", nextDatasetPage);
   byId("closeDatasetDetailBtn")?.addEventListener("click", closeDatasetDetail);
+  byId("modalBackdrop")?.addEventListener("click", closeDatasetDetail);
 
+  const debouncedFilter = debounce(applyDatasetFiltersAndRender, 300);
   ["searchInput", "datasetResultFilter", "datasetBranchFilter", "datasetStartDate", "datasetEndDate", "datasetSortBy", "datasetRowsPerPage"]
     .forEach((fieldId) => {
-      byId(fieldId)?.addEventListener("input", applyDatasetFiltersAndRender);
-      byId(fieldId)?.addEventListener("change", applyDatasetFiltersAndRender);
+      const el = byId(fieldId);
+      if (!el) return;
+      const eventType = el.tagName === "INPUT" ? "input" : "change";
+      el.addEventListener(eventType, fieldId === "searchInput" ? debouncedFilter : applyDatasetFiltersAndRender);
     });
 
   queryAll("[data-today-view]").forEach((button) => {
@@ -1849,9 +1985,9 @@ async function initializeApp() {
   setupInlineHelp();
   setupAccordions();
   setupFormPersistence();
+  setupClockSegments();
   setupInitialVisuals();
 
-  applyUrlState();
   restoreFormState();
   restoreLastTab();
   renderHistory();

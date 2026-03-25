@@ -19,6 +19,15 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>Loading Dataset...</p>
+    <div class="loading-bar-wrap">
+      <div id="loadingBar" class="loading-bar"></div>
+    </div>
+  </div>
+
   <a class="skip-link" href="#mainContent">Skip to main content</a>
 
   <header class="site-header" id="top">
@@ -427,6 +436,7 @@
             <button id="manualBtn" type="submit">Calculate</button>
             <button id="manualResetBtn" type="button">Reset</button>
             <button id="manualCopyBtn" type="button">Copy Result</button>
+            <button id="manualShareBtn" type="button" class="accent-btn" title="Generate shareable link">Share</button>
           </div>
 
           <p id="manualError" class="form-error hidden" aria-live="assertive"></p>
@@ -504,6 +514,7 @@
             <button id="gregorianConvertBtn" type="submit">Convert and Calculate</button>
             <button id="gregorianResetBtn" type="button">Reset</button>
             <button id="gregorianCopyBtn" type="button">Copy Result</button>
+            <button id="gregorianShareBtn" type="button" class="accent-btn" title="Generate shareable link">Share</button>
           </div>
 
           <p id="gregorianError" class="form-error hidden" aria-live="assertive"></p>
@@ -566,6 +577,7 @@
           <div class="form-actions">
             <button id="currentMomentBtn" type="button">Calculate Current Moment</button>
             <button id="currentMomentCopyBtn" type="button">Copy Result</button>
+            <button id="currentMomentShareBtn" type="button" class="accent-btn" title="Generate shareable link">Share</button>
           </div>
 
           <article id="currentMomentOutput" class="result-panel hidden" aria-live="polite">
@@ -693,13 +705,37 @@
             The result cycle is fixed. The highlighted node shows the currently
             selected or calculated result.
           </p>
-          <div id="cycleDiagram" class="cycle-diagram" aria-label="Six result cycle diagram">
-            <div class="cycle-node" data-result="大安">大安</div>
-            <div class="cycle-node" data-result="留连">留连</div>
-            <div class="cycle-node" data-result="速喜">速喜</div>
-            <div class="cycle-node" data-result="赤口">赤口</div>
-            <div class="cycle-node" data-result="小吉">小吉</div>
-            <div class="cycle-node" data-result="空亡">空亡</div>
+          <div id="cycleDiagram" class="cycle-diagram-svg" aria-label="Six result cycle diagram">
+            <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+              <!-- Definitions for arrows and markers can go here -->
+              <circle cx="200" cy="200" r="160" class="cycle-track" />
+              
+              <!-- Nodes -->
+              <g class="cycle-node-group" data-result="大安">
+                <circle cx="200" cy="40" r="30" />
+                <text x="200" y="45">大安</text>
+              </g>
+              <g class="cycle-node-group" data-result="留连">
+                <circle cx="340" cy="120" r="30" />
+                <text x="340" y="125">留连</text>
+              </g>
+              <g class="cycle-node-group" data-result="速喜">
+                <circle cx="340" cy="280" r="30" />
+                <text x="340" y="285">速喜</text>
+              </g>
+              <g class="cycle-node-group" data-result="赤口">
+                <circle cx="200" cy="360" r="30" />
+                <text x="200" y="365">赤口</text>
+              </g>
+              <g class="cycle-node-group" data-result="小吉">
+                <circle cx="60" cy="280" r="30" />
+                <text x="60" y="285">小吉</text>
+              </g>
+              <g class="cycle-node-group" data-result="空亡">
+                <circle cx="60" cy="120" r="30" />
+                <text x="60" y="125">空亡</text>
+              </g>
+            </svg>
           </div>
         </article>
 
@@ -709,19 +745,14 @@
             Traditional Chinese time divides the day into twelve branch hours.
             The highlighted segment shows the current or selected branch.
           </p>
-          <div id="branchClock" class="branch-clock" aria-label="Earthly Branch clock">
-            <div class="branch-segment" data-branch="子">子</div>
-            <div class="branch-segment" data-branch="丑">丑</div>
-            <div class="branch-segment" data-branch="寅">寅</div>
-            <div class="branch-segment" data-branch="卯">卯</div>
-            <div class="branch-segment" data-branch="辰">辰</div>
-            <div class="branch-segment" data-branch="巳">巳</div>
-            <div class="branch-segment" data-branch="午">午</div>
-            <div class="branch-segment" data-branch="未">未</div>
-            <div class="branch-segment" data-branch="申">申</div>
-            <div class="branch-segment" data-branch="酉">酉</div>
-            <div class="branch-segment" data-branch="戌">戌</div>
-            <div class="branch-segment" data-branch="亥">亥</div>
+          <div id="branchClock" class="branch-clock-svg" aria-label="Earthly Branch clock">
+            <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+              <circle cx="200" cy="200" r="180" class="clock-face" />
+              <!-- Branch markers will be dynamically handled or hardcoded -->
+              <g id="clockSegments"></g>
+              <circle cx="200" cy="200" r="10" class="clock-center" />
+              <line x1="200" y1="200" x2="200" y2="60" class="clock-hand" id="clockHand" />
+            </svg>
           </div>
         </article>
       </div>
@@ -893,13 +924,6 @@
         <button id="nextPageBtn" type="button">Next</button>
       </div>
 
-      <div id="datasetRowDetail" class="result-panel hidden">
-        <div class="panel-header">
-          <h3>Selected Dataset Entry</h3>
-          <button id="closeDatasetDetailBtn" type="button">Close</button>
-        </div>
-        <div id="datasetDetailContent"></div>
-      </div>
 
       <div id="datasetEmptyState" class="empty-state hidden">
         No dataset rows matched the current filters.
@@ -1264,6 +1288,18 @@
   <aside class="toast-region" aria-live="polite" aria-atomic="true">
     <div id="appToast" class="app-toast hidden"></div>
   </aside>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden"></div>
+  
+  <div id="datasetRowDetail" class="dataset-modal hidden">
+    <div class="modal-content glass-panel">
+      <div class="panel-header">
+        <h3>Selected Dataset Entry</h3>
+        <button id="closeDatasetDetailBtn" type="button">Close</button>
+      </div>
+      <div id="datasetDetailContent"></div>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="footer-grid">

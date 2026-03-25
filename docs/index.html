@@ -1,0 +1,1297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Xiao Liu Ren Explorer</title>
+  <meta
+    name="description"
+    content="Beginner-friendly Xiao Liu Ren explorer with calculator, Gregorian-to-lunar conversion, dataset browser, statistics, explanations, and research tools."
+  />
+  <meta
+    name="keywords"
+    content="Xiao Liu Ren, 小六壬, divination, lunar calendar, earthly branches, Chinese metaphysics"
+  />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#mainContent">Skip to main content</a>
+
+  <header class="site-header" id="top">
+    <div class="header-inner">
+      <div class="brand-block">
+        <p class="eyebrow">Static GitHub Pages Website</p>
+        <h1>Xiao Liu Ren Explorer</h1>
+        <p class="subtitle">
+          A beginner-friendly Xiao Liu Ren learning, calculation, and research website.
+        </p>
+      </div>
+
+      <div class="header-actions">
+        <button id="themeToggleBtn" type="button" aria-label="Toggle dark mode">
+          Toggle Theme
+        </button>
+        <button id="askNowBtn" type="button">
+          Ask Now
+        </button>
+        <button id="scrollTopBtn" type="button" aria-label="Scroll to top">
+          ↑ Top
+        </button>
+      </div>
+    </div>
+
+    <div class="header-status" aria-live="polite">
+      <div class="status-card">
+        <span class="status-label">Current Date</span>
+        <strong id="currentDateDisplay">—</strong>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Current Time</span>
+        <strong id="currentTimeDisplay">—</strong>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Current Branch</span>
+        <strong id="currentBranchDisplay">—</strong>
+      </div>
+      <div class="status-card">
+        <span class="status-label">Current Lunar Date</span>
+        <strong id="currentLunarDisplay">—</strong>
+      </div>
+    </div>
+  </header>
+
+  <nav class="main-nav" aria-label="Primary">
+    <div class="nav-inner">
+      <button class="nav-tab active" data-tab="intro">Start Here</button>
+      <button class="nav-tab" data-tab="today">Today</button>
+      <button class="nav-tab" data-tab="lookup">Lookup</button>
+      <button class="nav-tab" data-tab="calculator">Calculator</button>
+      <button class="nav-tab" data-tab="visuals">Visuals</button>
+      <button class="nav-tab" data-tab="dataset">Dataset</button>
+      <button class="nav-tab" data-tab="statistics">Statistics</button>
+      <button class="nav-tab" data-tab="learning">Learning</button>
+      <button class="nav-tab" data-tab="science">Science & Psychology</button>
+      <button class="nav-tab" data-tab="faq">FAQ</button>
+    </div>
+  </nav>
+
+  <main id="mainContent">
+    <!-- INTRO -->
+    <section id="intro" class="tab-section active" aria-labelledby="introTitle">
+      <div class="hero-card fade-in">
+        <div class="hero-copy">
+          <p class="eyebrow">Beginner Guide</p>
+          <h2 id="introTitle">Start Here</h2>
+          <p>
+            Xiao Liu Ren (小六壬) is a traditional Chinese divination method that
+            uses three time-based inputs:
+            <strong>lunar month</strong>, <strong>lunar day</strong>, and
+            <strong>Earthly Branch hour</strong>.
+          </p>
+          <p>
+            This website is designed so that someone who knows nothing about
+            Xiao Liu Ren can still use it. You can calculate manually, use
+            Gregorian dates and clock time, explore a generated dataset, and
+            read explanations about the cultural ideas behind the system.
+          </p>
+
+          <div class="hero-actions">
+            <button type="button" class="jump-btn" data-jump="calculator">
+              Open Calculator
+            </button>
+            <button type="button" class="jump-btn" data-jump="today">
+              View Today
+            </button>
+            <button type="button" class="jump-btn" data-jump="learning">
+              Learn the Concepts
+            </button>
+          </div>
+        </div>
+
+        <aside class="hero-summary">
+          <h3>Quick Summary</h3>
+          <ul class="clean-list">
+            <li>Six results in a repeating cycle</li>
+            <li>Can use current time or a selected time</li>
+            <li>Can convert Gregorian date to lunar date</li>
+            <li>Includes charts, filters, and explanations</li>
+            <li>Includes science and psychology notes</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card fade-in">
+          <h3>What are the six results?</h3>
+          <div class="result-chip-grid">
+            <span class="result-chip result-da">大安</span>
+            <span class="result-chip result-liu">留连</span>
+            <span class="result-chip result-su">速喜</span>
+            <span class="result-chip result-chi">赤口</span>
+            <span class="result-chip result-xiao">小吉</span>
+            <span class="result-chip result-kong">空亡</span>
+          </div>
+          <p id="sixResultsSummary">
+            These six names form the repeating outcome cycle used in this site.
+          </p>
+        </article>
+
+        <article class="info-card fade-in">
+          <h3>Calculation Formula</h3>
+          <pre class="formula-display">(month + day + hour − 3) mod 6</pre>
+          <p>
+            Here, “month” means lunar month, “day” means lunar day, and “hour”
+            means the Earthly Branch hour number.
+          </p>
+          <button type="button" class="inline-help-btn" data-help="formulaHelp">
+            Show explanation
+          </button>
+          <div id="formulaHelp" class="inline-help hidden">
+            <p>
+              The result index from the formula maps to one of the six outcomes
+              in a fixed order:
+            </p>
+            <ol>
+              <li>大安</li>
+              <li>留连</li>
+              <li>速喜</li>
+              <li>赤口</li>
+              <li>小吉</li>
+              <li>空亡</li>
+            </ol>
+          </div>
+        </article>
+      </div>
+
+      <div class="card-grid three-col">
+        <article class="step-card fade-in">
+          <h3>1. Choose a mode</h3>
+          <p>
+            Use <strong>Today</strong>, <strong>Lookup</strong>, or
+            <strong>Calculator</strong>.
+          </p>
+        </article>
+        <article class="step-card fade-in">
+          <h3>2. Understand the inputs</h3>
+          <p>
+            Gregorian date can be converted automatically. Manual mode uses
+            lunar month, lunar day, and branch hour.
+          </p>
+        </article>
+        <article class="step-card fade-in">
+          <h3>3. Read the result</h3>
+          <p>
+            Every result comes with meaning, advice, breakdown, and beginner
+            explanation.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- TODAY -->
+    <section id="today" class="tab-section hidden" aria-labelledby="todayTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Automatic Daily View</p>
+          <h2 id="todayTitle">Today</h2>
+          <p class="section-description">
+            This section automatically shows the results for today, with exact
+            time, Earthly Branch hour, lunar date, and interpretation.
+          </p>
+        </div>
+        <div class="section-actions">
+          <button id="refreshTodayBtn" type="button">Refresh Today</button>
+          <button id="copyTodaySummaryBtn" type="button">Copy Summary</button>
+        </div>
+      </div>
+
+      <div class="summary-strip">
+        <div class="summary-card">
+          <span class="summary-label">Today</span>
+          <strong id="todayDateDisplay">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Dominant Result</span>
+          <strong id="todayDominantResult">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Current Hour Result</span>
+          <strong id="todayCurrentHourResult">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Current Branch</span>
+          <strong id="todayCurrentHourBranch">—</strong>
+        </div>
+      </div>
+
+      <div class="view-toggle-group" role="group" aria-label="Today view options">
+        <button type="button" class="sub-toggle active" data-today-view="cards">
+          Card View
+        </button>
+        <button type="button" class="sub-toggle" data-today-view="timeline">
+          Timeline View
+        </button>
+      </div>
+
+      <div id="todayCardsView" class="sub-view">
+        <div id="todayResults" class="today-grid" aria-live="polite"></div>
+      </div>
+
+      <div id="todayTimelineView" class="sub-view hidden">
+        <div id="todayTimeline" class="timeline-list" aria-live="polite"></div>
+      </div>
+
+      <div id="todayEmptyState" class="empty-state hidden">
+        No matching data is available for today.
+      </div>
+    </section>
+
+    <!-- LOOKUP -->
+    <section id="lookup" class="tab-section hidden" aria-labelledby="lookupTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Search a Date</p>
+          <h2 id="lookupTitle">Lookup</h2>
+          <p class="section-description">
+            Select a Gregorian date and show all hourly results for that day,
+            including time, branch, lunar date, and explanations.
+          </p>
+        </div>
+      </div>
+
+      <form id="lookupForm" class="form-card" novalidate>
+        <div class="form-grid four-col">
+          <div class="form-group">
+            <label for="lookupDate">Gregorian Date</label>
+            <input type="date" id="lookupDate" name="lookupDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="lookupResultFilter">Result Filter</label>
+            <select id="lookupResultFilter" name="lookupResultFilter">
+              <option value="">All Results</option>
+              <option value="大安">大安</option>
+              <option value="留连">留连</option>
+              <option value="速喜">速喜</option>
+              <option value="赤口">赤口</option>
+              <option value="小吉">小吉</option>
+              <option value="空亡">空亡</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="lookupBranchFilter">Branch Filter</label>
+            <select id="lookupBranchFilter" name="lookupBranchFilter">
+              <option value="">All Branches</option>
+              <option value="子">子</option>
+              <option value="丑">丑</option>
+              <option value="寅">寅</option>
+              <option value="卯">卯</option>
+              <option value="辰">辰</option>
+              <option value="巳">巳</option>
+              <option value="午">午</option>
+              <option value="未">未</option>
+              <option value="申">申</option>
+              <option value="酉">酉</option>
+              <option value="戌">戌</option>
+              <option value="亥">亥</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="lookupViewMode">Display Mode</label>
+            <select id="lookupViewMode" name="lookupViewMode">
+              <option value="cards">Cards</option>
+              <option value="timeline">Timeline</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button id="lookupBtn" type="submit">Show Results</button>
+          <button id="lookupResetBtn" type="button">Reset</button>
+          <button id="lookupCopyBtn" type="button">Copy Day Summary</button>
+        </div>
+
+        <p id="lookupError" class="form-error hidden" aria-live="assertive"></p>
+      </form>
+
+      <div class="summary-strip">
+        <div class="summary-card">
+          <span class="summary-label">Selected Date</span>
+          <strong id="lookupSelectedDateDisplay">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Dominant Result</span>
+          <strong id="lookupDominantResult">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Entries Found</span>
+          <strong id="lookupCountDisplay">—</strong>
+        </div>
+      </div>
+
+      <div id="lookupCardsView" class="lookup-results"></div>
+      <div id="lookupTimelineView" class="timeline-list hidden"></div>
+
+      <div id="lookupEmptyState" class="empty-state hidden">
+        No data matched the selected date and filters.
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="calculator" class="tab-section hidden" aria-labelledby="calculatorTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Calculation Tools</p>
+          <h2 id="calculatorTitle">Calculator</h2>
+          <p class="section-description">
+            You can calculate Xiao Liu Ren using the classic lunar-input method,
+            use Gregorian date and time conversion, or use the current moment.
+          </p>
+        </div>
+      </div>
+
+      <div class="tool-tabs" role="tablist" aria-label="Calculator modes">
+        <button type="button" class="tool-tab active" data-calc-tab="manualClassic">
+          Manual Classic
+        </button>
+        <button type="button" class="tool-tab" data-calc-tab="gregorianConvert">
+          Gregorian → Lunar
+        </button>
+        <button type="button" class="tool-tab" data-calc-tab="currentMoment">
+          Current Moment
+        </button>
+        <button type="button" class="tool-tab" data-calc-tab="compareTimes">
+          Compare Times
+        </button>
+      </div>
+
+      <!-- Manual Classic -->
+      <div id="manualClassic" class="calc-panel active">
+        <form id="manualCalcForm" class="form-card" novalidate>
+          <div class="form-grid three-col">
+            <div class="form-group">
+              <label for="monthInput">Lunar Month</label>
+              <input
+                type="number"
+                id="monthInput"
+                name="monthInput"
+                min="1"
+                max="12"
+                placeholder="1-12"
+                inputmode="numeric"
+              />
+              <p class="field-help">Traditional lunar month used by the formula.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="dayInput">Lunar Day</label>
+              <input
+                type="number"
+                id="dayInput"
+                name="dayInput"
+                min="1"
+                max="30"
+                placeholder="1-30"
+                inputmode="numeric"
+              />
+              <p class="field-help">Traditional lunar day used by the formula.</p>
+            </div>
+
+            <div class="form-group">
+              <label for="branchInput">Earthly Branch Hour</label>
+              <select id="branchInput" name="branchInput">
+                <option value="1">子 (23:00-00:59)</option>
+                <option value="2">丑 (01:00-02:59)</option>
+                <option value="3">寅 (03:00-04:59)</option>
+                <option value="4">卯 (05:00-06:59)</option>
+                <option value="5">辰 (07:00-08:59)</option>
+                <option value="6">巳 (09:00-10:59)</option>
+                <option value="7">午 (11:00-12:59)</option>
+                <option value="8">未 (13:00-14:59)</option>
+                <option value="9">申 (15:00-16:59)</option>
+                <option value="10">酉 (17:00-18:59)</option>
+                <option value="11">戌 (19:00-20:59)</option>
+                <option value="12">亥 (21:00-22:59)</option>
+              </select>
+              <p class="field-help">Traditional Chinese two-hour time period.</p>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="manualBtn" type="submit">Calculate</button>
+            <button id="manualResetBtn" type="button">Reset</button>
+            <button id="manualCopyBtn" type="button">Copy Result</button>
+          </div>
+
+          <p id="manualError" class="form-error hidden" aria-live="assertive"></p>
+        </form>
+
+        <article id="manualOutput" class="result-panel hidden" aria-live="polite">
+          <div class="panel-header">
+            <h3 id="manualResultTitle">—</h3>
+            <span id="manualResultBadge" class="result-badge">—</span>
+          </div>
+
+          <div class="result-detail-grid">
+            <div class="detail-card">
+              <h4>Meaning</h4>
+              <p id="manualMeaning">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>Advice</h4>
+              <p id="manualAdvice">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>Simple Explanation</h4>
+              <p id="manualSimpleExplanation">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>What to Watch For</h4>
+              <p id="manualWatchFor">—</p>
+            </div>
+          </div>
+
+          <div class="formula-box">
+            <strong>Calculation:</strong>
+            <span id="formulaDisplay">—</span>
+          </div>
+
+          <div class="breakdown-box">
+            <h4>Calculation Breakdown</h4>
+            <ol id="manualBreakdownList" class="breakdown-list"></ol>
+          </div>
+        </article>
+      </div>
+
+      <!-- Gregorian Convert -->
+      <div id="gregorianConvert" class="calc-panel hidden">
+        <form id="gregorianCalcForm" class="form-card" novalidate>
+          <div class="form-grid four-col">
+            <div class="form-group">
+              <label for="gregorianDateInput">Gregorian Date</label>
+              <input type="date" id="gregorianDateInput" name="gregorianDateInput" />
+            </div>
+
+            <div class="form-group">
+              <label for="gregorianTimeInput">Clock Time</label>
+              <input type="time" id="gregorianTimeInput" name="gregorianTimeInput" />
+            </div>
+
+            <div class="form-group">
+              <label for="gregorianHourMode">Hour Source</label>
+              <select id="gregorianHourMode" name="gregorianHourMode">
+                <option value="clock">Use selected clock time</option>
+                <option value="current">Use current browser time</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="gregorianExplainMode">Explanation Level</label>
+              <select id="gregorianExplainMode" name="gregorianExplainMode">
+                <option value="beginner">Beginner</option>
+                <option value="detailed">Detailed</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="gregorianConvertBtn" type="submit">Convert and Calculate</button>
+            <button id="gregorianResetBtn" type="button">Reset</button>
+            <button id="gregorianCopyBtn" type="button">Copy Result</button>
+          </div>
+
+          <p id="gregorianError" class="form-error hidden" aria-live="assertive"></p>
+        </form>
+
+        <article id="gregorianOutput" class="result-panel hidden" aria-live="polite">
+          <div class="summary-strip">
+            <div class="summary-card">
+              <span class="summary-label">Gregorian Date</span>
+              <strong id="gregorianOutputDate">—</strong>
+            </div>
+            <div class="summary-card">
+              <span class="summary-label">Clock Time</span>
+              <strong id="gregorianOutputTime">—</strong>
+            </div>
+            <div class="summary-card">
+              <span class="summary-label">Lunar Date</span>
+              <strong id="gregorianOutputLunar">—</strong>
+            </div>
+            <div class="summary-card">
+              <span class="summary-label">Branch Hour</span>
+              <strong id="gregorianOutputBranch">—</strong>
+            </div>
+          </div>
+
+          <div class="panel-header">
+            <h3 id="gregorianResultTitle">—</h3>
+            <span id="gregorianResultBadge" class="result-badge">—</span>
+          </div>
+
+          <div class="result-detail-grid">
+            <div class="detail-card">
+              <h4>Meaning</h4>
+              <p id="gregorianMeaning">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>Advice</h4>
+              <p id="gregorianAdvice">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>Conversion Explanation</h4>
+              <p id="gregorianConversionExplanation">—</p>
+            </div>
+            <div class="detail-card">
+              <h4>Calculation</h4>
+              <p id="gregorianFormulaDisplay">—</p>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Current Moment -->
+      <div id="currentMoment" class="calc-panel hidden">
+        <div class="form-card">
+          <p class="section-description">
+            Use the browser’s current date and time to perform a one-click
+            “Ask Now” divination.
+          </p>
+
+          <div class="form-actions">
+            <button id="currentMomentBtn" type="button">Calculate Current Moment</button>
+            <button id="currentMomentCopyBtn" type="button">Copy Result</button>
+          </div>
+
+          <article id="currentMomentOutput" class="result-panel hidden" aria-live="polite">
+            <div class="summary-strip">
+              <div class="summary-card">
+                <span class="summary-label">Current DateTime</span>
+                <strong id="currentMomentDateTime">—</strong>
+              </div>
+              <div class="summary-card">
+                <span class="summary-label">Lunar Date</span>
+                <strong id="currentMomentLunar">—</strong>
+              </div>
+              <div class="summary-card">
+                <span class="summary-label">Branch Hour</span>
+                <strong id="currentMomentBranch">—</strong>
+              </div>
+              <div class="summary-card">
+                <span class="summary-label">Result</span>
+                <strong id="currentMomentResult">—</strong>
+              </div>
+            </div>
+
+            <div class="detail-card">
+              <h4>Meaning</h4>
+              <p id="currentMomentMeaning">—</p>
+            </div>
+
+            <div class="detail-card">
+              <h4>Advice</h4>
+              <p id="currentMomentAdvice">—</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <!-- Compare Times -->
+      <div id="compareTimes" class="calc-panel hidden">
+        <form id="compareForm" class="form-card" novalidate>
+          <div class="form-grid two-col">
+            <fieldset class="compare-fieldset">
+              <legend>Time A</legend>
+              <div class="form-grid two-col">
+                <div class="form-group">
+                  <label for="compareDateA">Gregorian Date</label>
+                  <input type="date" id="compareDateA" name="compareDateA" />
+                </div>
+                <div class="form-group">
+                  <label for="compareTimeA">Clock Time</label>
+                  <input type="time" id="compareTimeA" name="compareTimeA" />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="compare-fieldset">
+              <legend>Time B</legend>
+              <div class="form-grid two-col">
+                <div class="form-group">
+                  <label for="compareDateB">Gregorian Date</label>
+                  <input type="date" id="compareDateB" name="compareDateB" />
+                </div>
+                <div class="form-group">
+                  <label for="compareTimeB">Clock Time</label>
+                  <input type="time" id="compareTimeB" name="compareTimeB" />
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <div class="form-actions">
+            <button id="compareBtn" type="submit">Compare</button>
+            <button id="compareResetBtn" type="button">Reset</button>
+          </div>
+
+          <p id="compareError" class="form-error hidden" aria-live="assertive"></p>
+        </form>
+
+        <div id="compareOutput" class="card-grid two-col hidden">
+          <article class="result-panel">
+            <h3>Time A</h3>
+            <p><strong>DateTime:</strong> <span id="compareADateTime">—</span></p>
+            <p><strong>Lunar:</strong> <span id="compareALunar">—</span></p>
+            <p><strong>Branch:</strong> <span id="compareABranch">—</span></p>
+            <p><strong>Result:</strong> <span id="compareAResult">—</span></p>
+          </article>
+
+          <article class="result-panel">
+            <h3>Time B</h3>
+            <p><strong>DateTime:</strong> <span id="compareBDateTime">—</span></p>
+            <p><strong>Lunar:</strong> <span id="compareBLunar">—</span></p>
+            <p><strong>Branch:</strong> <span id="compareBBranch">—</span></p>
+            <p><strong>Result:</strong> <span id="compareBResult">—</span></p>
+          </article>
+        </div>
+      </div>
+
+      <!-- Recent History -->
+      <aside class="history-panel">
+        <div class="section-header compact">
+          <h3>Recent Calculations</h3>
+          <div class="section-actions">
+            <button id="clearHistoryBtn" type="button">Clear History</button>
+          </div>
+        </div>
+        <ul id="historyList" class="history-list"></ul>
+      </aside>
+    </section>
+
+    <!-- VISUALS -->
+    <section id="visuals" class="tab-section hidden" aria-labelledby="visualsTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Visual Learning Aids</p>
+          <h2 id="visualsTitle">Visuals</h2>
+          <p class="section-description">
+            These diagrams help beginners understand the structure of Xiao Liu
+            Ren, the six-result cycle, and Earthly Branch hours.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Six-Result Cycle</h3>
+          <p>
+            The result cycle is fixed. The highlighted node shows the currently
+            selected or calculated result.
+          </p>
+          <div id="cycleDiagram" class="cycle-diagram" aria-label="Six result cycle diagram">
+            <div class="cycle-node" data-result="大安">大安</div>
+            <div class="cycle-node" data-result="留连">留连</div>
+            <div class="cycle-node" data-result="速喜">速喜</div>
+            <div class="cycle-node" data-result="赤口">赤口</div>
+            <div class="cycle-node" data-result="小吉">小吉</div>
+            <div class="cycle-node" data-result="空亡">空亡</div>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <h3>Earthly Branch Clock</h3>
+          <p>
+            Traditional Chinese time divides the day into twelve branch hours.
+            The highlighted segment shows the current or selected branch.
+          </p>
+          <div id="branchClock" class="branch-clock" aria-label="Earthly Branch clock">
+            <div class="branch-segment" data-branch="子">子</div>
+            <div class="branch-segment" data-branch="丑">丑</div>
+            <div class="branch-segment" data-branch="寅">寅</div>
+            <div class="branch-segment" data-branch="卯">卯</div>
+            <div class="branch-segment" data-branch="辰">辰</div>
+            <div class="branch-segment" data-branch="巳">巳</div>
+            <div class="branch-segment" data-branch="午">午</div>
+            <div class="branch-segment" data-branch="未">未</div>
+            <div class="branch-segment" data-branch="申">申</div>
+            <div class="branch-segment" data-branch="酉">酉</div>
+            <div class="branch-segment" data-branch="戌">戌</div>
+            <div class="branch-segment" data-branch="亥">亥</div>
+          </div>
+        </article>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Color Legend</h3>
+          <ul class="legend-list">
+            <li><span class="legend-swatch swatch-da"></span> 大安 — stable / favorable</li>
+            <li><span class="legend-swatch swatch-liu"></span> 留连 — delay / lingering</li>
+            <li><span class="legend-swatch swatch-su"></span> 速喜 — quick / favorable</li>
+            <li><span class="legend-swatch swatch-chi"></span> 赤口 — conflict / friction</li>
+            <li><span class="legend-swatch swatch-xiao"></span> 小吉 — moderate good fortune</li>
+            <li><span class="legend-swatch swatch-kong"></span> 空亡 — emptiness / uncertainty</li>
+          </ul>
+        </article>
+
+        <article class="info-card">
+          <h3>Calculation Flow</h3>
+          <ol class="flow-list">
+            <li>Choose a date and time</li>
+            <li>Convert Gregorian date to lunar date if needed</li>
+            <li>Convert clock time to branch hour</li>
+            <li>Apply the formula</li>
+            <li>Map the result index to one of the six outcomes</li>
+          </ol>
+        </article>
+      </div>
+    </section>
+
+    <!-- DATASET -->
+    <section id="dataset" class="tab-section hidden" aria-labelledby="datasetTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Generated Data</p>
+          <h2 id="datasetTitle">Dataset Browser</h2>
+          <p class="section-description">
+            Browse the generated JSON dataset. You can search, filter, sort, and
+            inspect detailed entries.
+          </p>
+        </div>
+
+        <div class="section-actions">
+          <button id="downloadFilteredJsonBtn" type="button">Download JSON</button>
+          <button id="downloadFilteredCsvBtn" type="button">Download CSV</button>
+        </div>
+      </div>
+
+      <form id="datasetFilterForm" class="form-card" novalidate>
+        <div class="form-grid five-col">
+          <div class="form-group">
+            <label for="searchInput">Search</label>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search date, time, result, or branch"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="datasetResultFilter">Result</label>
+            <select id="datasetResultFilter">
+              <option value="">All Results</option>
+              <option value="大安">大安</option>
+              <option value="留连">留连</option>
+              <option value="速喜">速喜</option>
+              <option value="赤口">赤口</option>
+              <option value="小吉">小吉</option>
+              <option value="空亡">空亡</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="datasetBranchFilter">Branch</label>
+            <select id="datasetBranchFilter">
+              <option value="">All Branches</option>
+              <option value="子">子</option>
+              <option value="丑">丑</option>
+              <option value="寅">寅</option>
+              <option value="卯">卯</option>
+              <option value="辰">辰</option>
+              <option value="巳">巳</option>
+              <option value="午">午</option>
+              <option value="未">未</option>
+              <option value="申">申</option>
+              <option value="酉">酉</option>
+              <option value="戌">戌</option>
+              <option value="亥">亥</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="datasetStartDate">Start Date</label>
+            <input type="date" id="datasetStartDate" />
+          </div>
+
+          <div class="form-group">
+            <label for="datasetEndDate">End Date</label>
+            <input type="date" id="datasetEndDate" />
+          </div>
+        </div>
+
+        <div class="form-grid three-col">
+          <div class="form-group">
+            <label for="datasetSortBy">Sort By</label>
+            <select id="datasetSortBy">
+              <option value="datetimeAsc">DateTime ↑</option>
+              <option value="datetimeDesc">DateTime ↓</option>
+              <option value="resultAsc">Result A→Z</option>
+              <option value="hourAsc">Hour ↑</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="datasetRowsPerPage">Rows Per Page</label>
+            <select id="datasetRowsPerPage">
+              <option value="25">25</option>
+              <option value="50" selected>50</option>
+              <option value="100">100</option>
+              <option value="250">250</option>
+            </select>
+          </div>
+
+          <div class="form-group align-end">
+            <div class="form-actions compact">
+              <button id="datasetApplyFiltersBtn" type="submit">Apply Filters</button>
+              <button id="datasetClearFiltersBtn" type="button">Clear Filters</button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="summary-strip">
+        <div class="summary-card">
+          <span class="summary-label">Visible Rows</span>
+          <strong id="datasetVisibleCount">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Total Rows</span>
+          <strong id="datasetTotalCount">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Filtered Dominant Result</span>
+          <strong id="datasetDominantResult">—</strong>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table id="datasetTable">
+          <thead>
+            <tr>
+              <th>DateTime</th>
+              <th>Hour</th>
+              <th>Lunar Month</th>
+              <th>Lunar Day</th>
+              <th>Branch</th>
+              <th>Result</th>
+              <th>Meaning</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="datasetBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination-bar">
+        <button id="prevPageBtn" type="button">Previous</button>
+        <span id="paginationInfo">—</span>
+        <button id="nextPageBtn" type="button">Next</button>
+      </div>
+
+      <div id="datasetRowDetail" class="result-panel hidden">
+        <div class="panel-header">
+          <h3>Selected Dataset Entry</h3>
+          <button id="closeDatasetDetailBtn" type="button">Close</button>
+        </div>
+        <div id="datasetDetailContent"></div>
+      </div>
+
+      <div id="datasetEmptyState" class="empty-state hidden">
+        No dataset rows matched the current filters.
+      </div>
+    </section>
+
+    <!-- STATISTICS -->
+    <section id="statistics" class="tab-section hidden" aria-labelledby="statisticsTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Analytics</p>
+          <h2 id="statisticsTitle">Statistics</h2>
+          <p class="section-description">
+            Review the distribution of results in the full dataset or the
+            currently filtered subset.
+          </p>
+        </div>
+      </div>
+
+      <div class="summary-strip">
+        <div class="summary-card">
+          <span class="summary-label">Dataset Size</span>
+          <strong id="statsDatasetSize">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Favorable Total</span>
+          <strong id="statsFavorableTotal">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Challenging Total</span>
+          <strong id="statsChallengingTotal">—</strong>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Current Filter Scope</span>
+          <strong id="statsScopeLabel">Full Dataset</strong>
+        </div>
+      </div>
+
+      <div id="statsGrid" class="stats-grid"></div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Result Percentages</h3>
+          <div id="percentageBars" class="percentage-bars"></div>
+        </article>
+
+        <article class="info-card">
+          <h3>Hourly Distribution</h3>
+          <div id="hourlyDistribution" class="simple-chart"></div>
+        </article>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Branch Distribution</h3>
+          <div id="branchDistribution" class="simple-chart"></div>
+        </article>
+
+        <article class="info-card">
+          <h3>Result Ranking</h3>
+          <ol id="resultRankingList" class="ranking-list"></ol>
+        </article>
+      </div>
+    </section>
+
+    <!-- LEARNING -->
+    <section id="learning" class="tab-section hidden" aria-labelledby="learningTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Concepts and Terminology</p>
+          <h2 id="learningTitle">Learning</h2>
+          <p class="section-description">
+            This section explains the main concepts behind Xiao Liu Ren in
+            beginner-friendly language.
+          </p>
+        </div>
+      </div>
+
+      <div class="accordion-group" id="learningAccordion">
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="true">
+            What is Xiao Liu Ren?
+          </button>
+          <div class="accordion-content">
+            <p>
+              Xiao Liu Ren is a compact divination method that assigns one of
+              six outcomes to a given moment or selected time using a cyclical
+              calculation.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            What is a lunar date?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              A lunar date comes from the traditional Chinese lunisolar
+              calendar. It does not match the Gregorian calendar month and day
+              directly.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            What is an Earthly Branch hour?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              The day is divided into twelve named branch periods, each covering
+              roughly two modern clock hours.
+            </p>
+            <ul class="reference-list">
+              <li>子 — 23:00-00:59</li>
+              <li>丑 — 01:00-02:59</li>
+              <li>寅 — 03:00-04:59</li>
+              <li>卯 — 05:00-06:59</li>
+              <li>辰 — 07:00-08:59</li>
+              <li>巳 — 09:00-10:59</li>
+              <li>午 — 11:00-12:59</li>
+              <li>未 — 13:00-14:59</li>
+              <li>申 — 15:00-16:59</li>
+              <li>酉 — 17:00-18:59</li>
+              <li>戌 — 19:00-20:59</li>
+              <li>亥 — 21:00-22:59</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            What do the six results usually suggest?
+          </button>
+          <div class="accordion-content hidden">
+            <div class="result-explanation-grid">
+              <article class="mini-result-card">
+                <h4 class="result-da">大安</h4>
+                <p>Stable, calm, steady, broadly favorable.</p>
+              </article>
+              <article class="mini-result-card">
+                <h4 class="result-liu">留连</h4>
+                <p>Delay, repetition, lingering, entanglement.</p>
+              </article>
+              <article class="mini-result-card">
+                <h4 class="result-su">速喜</h4>
+                <p>Quick movement, favorable news, speed.</p>
+              </article>
+              <article class="mini-result-card">
+                <h4 class="result-chi">赤口</h4>
+                <p>Conflict, friction, disagreement, sharpness.</p>
+              </article>
+              <article class="mini-result-card">
+                <h4 class="result-xiao">小吉</h4>
+                <p>Moderately good, manageable benefit, support.</p>
+              </article>
+              <article class="mini-result-card">
+                <h4 class="result-kong">空亡</h4>
+                <p>Emptiness, non-arrival, unreliability, uncertainty.</p>
+              </article>
+            </div>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            What are Yin-Yang and the Five Elements?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              Many traditional Chinese systems place time, change, and events
+              into larger symbolic frameworks such as Yin-Yang and the Five
+              Elements. This site explains those ideas as cultural context, not
+              as scientific proof.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            How should beginners use the results?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              Read results as symbolic prompts or cultural interpretations. Do
+              not treat them as guaranteed predictions or as substitutes for
+              professional medical, legal, or financial advice.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Glossary</h3>
+          <dl class="glossary-list">
+            <dt>Lunar Month</dt>
+            <dd>Month in the traditional lunisolar calendar.</dd>
+            <dt>Lunar Day</dt>
+            <dd>Day number in the traditional lunisolar calendar.</dd>
+            <dt>Earthly Branch Hour</dt>
+            <dd>A named two-hour traditional time segment.</dd>
+            <dt>Divination</dt>
+            <dd>A traditional symbolic method for interpreting time or events.</dd>
+          </dl>
+        </article>
+
+        <article class="info-card">
+          <h3>How to Read Results Responsibly</h3>
+          <ul class="clean-list">
+            <li>Use results as reflection, not certainty.</li>
+            <li>Do not ignore real-world evidence.</li>
+            <li>Be aware of emotional interpretation.</li>
+            <li>Use critical thinking alongside tradition.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <!-- SCIENCE -->
+    <section id="science" class="tab-section hidden" aria-labelledby="scienceTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Critical Thinking</p>
+          <h2 id="scienceTitle">Science & Psychology</h2>
+          <p class="section-description">
+            This section explains why symbolic systems can feel meaningful, and
+            why users should distinguish cultural practice from scientific proof.
+          </p>
+        </div>
+      </div>
+
+      <div class="card-grid two-col">
+        <article class="info-card">
+          <h3>Pattern Seeking</h3>
+          <p>
+            Humans naturally look for patterns. This can make symbolic systems
+            feel personally meaningful, especially when dealing with uncertainty.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>Confirmation Bias</h3>
+          <p>
+            People often remember “hits” and forget “misses.” This can make a
+            divination method feel more accurate than it objectively is.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>Barnum Effect</h3>
+          <p>
+            Broad or flexible statements can feel very personally accurate,
+            especially when the reader is emotionally engaged.
+          </p>
+        </article>
+
+        <article class="info-card">
+          <h3>Decision Support vs Proof</h3>
+          <p>
+            A symbolic system may help reflection, framing, or emotional
+            processing, but that is not the same thing as scientific validation.
+          </p>
+        </article>
+      </div>
+
+      <article class="info-card">
+        <h3>Balanced Use</h3>
+        <p>
+          This website treats Xiao Liu Ren as a cultural and symbolic system.
+          It can be interesting, educational, and meaningful to some users, but
+          it should not be confused with scientific evidence or used as the sole
+          basis for high-stakes decisions.
+        </p>
+      </article>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="tab-section hidden" aria-labelledby="faqTitle">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Questions and Limitations</p>
+          <h2 id="faqTitle">FAQ</h2>
+        </div>
+      </div>
+
+      <div class="accordion-group" id="faqAccordion">
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="true">
+            Is this website a full Da Liu Ren system?
+          </button>
+          <div class="accordion-content">
+            <p>
+              No. This website implements the compact Xiao Liu Ren style
+              calculation, not the full classical Da Liu Ren system.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            Does this prove anything scientifically?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              No. This site is educational and symbolic. It does not establish
+              scientific proof for divination.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            Why does the site use lunar dates?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              The standard compact method is traditionally expressed using lunar
+              month, lunar day, and branch hour.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            Can I use Gregorian dates directly?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              Yes. The Gregorian conversion calculator converts them into the
+              lunar values needed by the formula.
+            </p>
+          </div>
+        </article>
+
+        <article class="accordion-item">
+          <button type="button" class="accordion-trigger" aria-expanded="false">
+            Are all schools exactly the same?
+          </button>
+          <div class="accordion-content hidden">
+            <p>
+              No. There are variations in teaching and interpretation. This site
+              presents a consistent modern compact method for clarity.
+            </p>
+          </div>
+        </article>
+      </div>
+
+      <article class="info-card">
+        <h3>Limitations</h3>
+        <ul class="clean-list">
+          <li>This is a static website.</li>
+          <li>Data is loaded from pre-generated JSON.</li>
+          <li>Some features depend on client-side browser support.</li>
+          <li>Interpretations are educational summaries, not universal doctrine.</li>
+        </ul>
+      </article>
+    </section>
+  </main>
+
+  <aside class="toast-region" aria-live="polite" aria-atomic="true">
+    <div id="appToast" class="app-toast hidden"></div>
+  </aside>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <h3>Xiao Liu Ren Explorer</h3>
+        <p>
+          Static website for learning, calculation, and exploration.
+        </p>
+      </div>
+      <div>
+        <h4>Sections</h4>
+        <ul class="clean-list">
+          <li><a href="#top">Top</a></li>
+          <li><button type="button" class="footer-jump" data-jump="today">Today</button></li>
+          <li><button type="button" class="footer-jump" data-jump="calculator">Calculator</button></li>
+          <li><button type="button" class="footer-jump" data-jump="dataset">Dataset</button></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Notes</h4>
+        <p>
+          Use responsibly. This site is educational and should not replace
+          evidence-based decision-making.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
